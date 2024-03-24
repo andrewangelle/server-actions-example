@@ -1,5 +1,5 @@
 import { serverComponents } from "@vinxi/server-components/plugin";
-import { se, serverFunctions } from "@vinxi/server-functions/plugin";
+import { serverFunctions } from "@vinxi/server-functions/plugin";
 import reactRefresh from "@vitejs/plugin-react";
 import { createApp } from "vinxi";
 
@@ -53,7 +53,7 @@ const app = createApp({
 					resolve: {
 						conditions: ["react-server"],
 					},
-					runtime: `@vinxi/react-server-dom/runtime`,
+					runtime: '@vinxi/react-server-dom/runtime',
 				}),
 				serverComponents.serverActions(),
 			],
