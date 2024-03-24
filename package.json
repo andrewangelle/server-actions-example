@@ -10,9 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "build:clean": "rm -rf dist",
-    "build:app": "tsc && vinxi build",
-    "build": "pnpm build:clean && npm run build:app",
+    "build": "vinxi build",
     "lint:fix": "pnpm biome check app --apply",
     "lint:check": "pnpm biome check app",
     "prepare": "husky",
@@ -50,6 +48,7 @@
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "husky": "^9.0.11",
-    "lint-staged": "^15.2.2"
+    "lint-staged": "^15.2.2",
+    "typescript": "^5.4.3"
   }
 }
