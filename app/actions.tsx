@@ -9,10 +9,12 @@ const storage = createStorage({
 
 export async function sayHello() {
   console.log('Hello World');
+
   await storage.setItem(
     'count',
     (Number(await storage.getItem('count')) ?? 0) + 1,
   );
+
   return Number(await storage.getItem('count')) ?? 0;
 }
 
