@@ -3,7 +3,7 @@ import { createFromFetch, encodeReply } from '@vinxi/react-server-dom/client';
 export async function fetchServerAction(
   base: string,
   id: string,
-  args: string,
+  args: string[],
   callServer: (id: string, args: string[]) => Promise<void> = (_id, _args) => {
     throw new Error('No server action handler');
   },

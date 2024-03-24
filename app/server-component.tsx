@@ -5,6 +5,7 @@ import { startTransition, use, useState } from 'react';
 import { fetchServerAction } from './fetchServerAction';
 
 let updateRoot: React.Dispatch<React.SetStateAction<JSX.Element>>;
+
 declare global {
   interface Window {
     init_server: ReadableStream<Uint8Array> | null;
@@ -14,6 +15,7 @@ declare global {
 
 export function getServerElementStream(url: string) {
   let stream: { body: ReadableStream<Uint8Array> } | Promise<Response>;
+
   // Ideally we should have a readable stream inlined in the HTML
   if (window.init_server) {
     stream = { body: window.init_server };
@@ -41,13 +43,15 @@ export const serverElementCache = /*#__PURE__*/ new Map<
   React.Thenable<JSX.Element>
 >();
 
-export function createCallServer(base) {
-  return async function callServer(id, args) {
+export function createCallServer(base: string) {
+  return async function callServer(id: string, args: string[]) {
     const root = await fetchServerAction(base, id, args, callServer);
+
     // Refresh the tree with the new RSC payload.
     startTransition(() => {
       updateRoot(root);
     });
+
     // return returnValue;
   };
 }

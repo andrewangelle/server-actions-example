@@ -1,4 +1,7 @@
-import { eventHandler, sendStream } from 'vinxi/http';
+import {
+  eventHandler,
+  // sendStream
+} from 'vinxi/http';
 import { getManifest } from 'vinxi/manifest';
 
 export default eventHandler(async (event) => {
@@ -9,7 +12,9 @@ export default eventHandler(async (event) => {
       // decodeReplyFromBusboy,
       // decodeAction,
     } = await import('@vinxi/react-server-dom/server');
+
     const serverReference = event.node.req.headers['server-action'] as string;
+
     if (serverReference) {
       // This is the client-side case
       const [filepath, name] = serverReference.split('#');
@@ -18,6 +23,7 @@ export default eventHandler(async (event) => {
       ];
 
       console.log(action.$$typeof);
+
       // Validate that this is actually a function we intended to expose and
       // not the client trying to invoke arbitrary functions. In a real app,
       // you'd have a manifest verifying this before even importing it.
@@ -27,6 +33,7 @@ export default eventHandler(async (event) => {
 
       // biome-ignore lint/style/useConst: <it is reassigned below>
       let args: string;
+
       const text = await new Promise((resolve) => {
         const requestBody = [];
         event.node.req.on('data', (chunks) => {
@@ -37,12 +44,16 @@ export default eventHandler(async (event) => {
           resolve(requestBody.join(''));
         });
       });
+
       console.log(text);
 
       args = await decodeReply(text);
+
       console.log(args, action);
+
       // }
       const result = action.apply(null, args);
+
       try {
         // Wait for any mutations
         await result;
@@ -51,6 +62,7 @@ export default eventHandler(async (event) => {
 
         // @ts-ignore
         stream._read = () => {};
+
         // @ts-ignore
         stream.on = (event, listener) => {
           events[event] = listener;

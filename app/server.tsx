@@ -11,7 +11,9 @@ function createStream() {
   const readable = new Readable({
     objectMode: true,
   });
+
   readable._read = () => {};
+
   // @ts-expect-error
   readable.headers = {};
 
