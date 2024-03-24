@@ -15,14 +15,14 @@ const app = createApp({
 			worker: true,
 			type: "http",
 			base: "/_rsc",
-			handler: "./app/react-server.tsx",
+			handler: "./app/server/react-server.tsx",
 			target: "server",
 			plugins: () => [serverComponents.server(), reactRefresh()],
 		},
 		{
 			name: "ssr",
 			type: "http",
-			handler: "./app/server.tsx",
+			handler: "./app/server/server.tsx",
 			target: "server",
 			plugins: () => [],
 			base: "/",
@@ -30,7 +30,7 @@ const app = createApp({
 		{
 			name: "client",
 			type: "client",
-			handler: "./app/client.tsx",
+			handler: "./app/client/client.tsx",
 			target: "browser",
 			plugins: () => [
 				serverFunctions.client({
@@ -46,7 +46,7 @@ const app = createApp({
 			worker: true,
 			type: "http",
 			base: "/_server",
-			handler: "./app/server-action.tsx",
+			handler: "./app/server/server-action.tsx",
 			target: "server",
 			plugins: () => [
 				serverFunctions.server({

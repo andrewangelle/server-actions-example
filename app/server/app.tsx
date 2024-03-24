@@ -1,4 +1,4 @@
-import { Counter } from './Counter';
+import { Counter } from '../client/Counter';
 import { getStore, sayHello } from './actions';
 import './style.css';
 

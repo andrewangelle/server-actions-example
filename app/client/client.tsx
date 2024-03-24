@@ -4,9 +4,9 @@ import { createRoot } from 'react-dom/client';
 import 'vinxi/client';
 import { getManifest } from 'vinxi/manifest';
 
-import { sayHello } from './actions';
-import { fetchServerAction } from './fetchServerAction';
-import { ServerComponent } from './server-component';
+// import { sayHello } from './actions.server';
+// import { fetchServerAction } from './fetchServerAction';
+import { ServerComponent } from '../server/server-component';
 
 // document.addEventListener("click", async (e) => {
 // 	console.log(sayHello, "hello");

@@ -2,7 +2,7 @@ import { createFromFetch } from '@vinxi/react-server-dom/client';
 import type * as React from 'react';
 import { startTransition, use, useState } from 'react';
 
-import { fetchServerAction } from './fetchServerAction';
+import { fetchServerAction } from '../client/fetchServerAction';
 
 let updateRoot: React.Dispatch<React.SetStateAction<JSX.Element>>;
 
