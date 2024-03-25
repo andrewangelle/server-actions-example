@@ -1,10 +1,11 @@
+/// <reference types="vinxi/types/server" />
 import { renderAsset } from '@vinxi/react';
 import { renderToPipeableStream } from '@vinxi/react-server-dom/server';
 import { type ReactNode, Suspense } from 'react';
 import { eventHandler, setHeaders } from 'vinxi/http';
 import { getManifest } from 'vinxi/manifest';
 
-import App from './app';
+import App from '../server/app';
 
 type ManifestAsset = {
   tag: string;
@@ -47,9 +48,6 @@ export default eventHandler(async (event) => {
         throw new Error('Invalid action');
       }
 
-      // biome-ignore lint/style/useConst: <it is reassigned below>
-      let args: HTMLElement;
-
       // if (req.is('multipart/form-data')) {
       //   // Use busboy to streamingly parse the reply from form-data.
       //   const bb = busboy({headers: req.headers});
@@ -68,7 +66,7 @@ export default eventHandler(async (event) => {
         });
       });
 
-      args = await decodeReply(text);
+      const args: HTMLElement = await decodeReply(text);
 
       const result = action.apply(null, args);
 
@@ -78,6 +76,7 @@ export default eventHandler(async (event) => {
       } catch (x) {
         // We handle the error on the client
       }
+
       // Refresh the client and return the value
       // return {};
     } else {

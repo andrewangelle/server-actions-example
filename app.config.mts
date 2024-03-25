@@ -15,14 +15,14 @@ const app = createApp({
 			worker: true,
 			type: "http",
 			base: "/_rsc",
-			handler: "./app/server/react-server.tsx",
+			handler: "./app/handlers/rsc.handler.tsx",
 			target: "server",
 			plugins: () => [serverComponents.server(), reactRefresh()],
 		},
 		{
 			name: "ssr",
 			type: "http",
-			handler: "./app/server/server.tsx",
+			handler: "./app/handlers/ssr.handler.tsx",
 			target: "server",
 			plugins: () => [],
 			base: "/",
@@ -46,7 +46,7 @@ const app = createApp({
 			worker: true,
 			type: "http",
 			base: "/_server",
-			handler: "./app/server/server-action.tsx",
+			handler: "./app/handlers/action.handler.tsx",
 			target: "server",
 			plugins: () => [
 				serverFunctions.server({
