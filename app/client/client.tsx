@@ -7,7 +7,7 @@ import { getManifest } from 'vinxi/manifest';
 import { ServerComponent } from '../server/server-component';
 
 globalThis.__vite__ = createModuleLoader({
-  loadModule: async (id) => {
+  loadModule: async (id: string) => {
     return getManifest('client').chunks[id].import();
   },
 });
