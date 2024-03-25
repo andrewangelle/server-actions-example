@@ -31,15 +31,14 @@ export default eventHandler(async (event) => {
         throw new Error('Invalid action');
       }
 
-      // biome-ignore lint/style/useConst: <it is reassigned below>
-      let args: string;
-
       const text = await new Promise((resolve) => {
         const requestBody = [];
+
         event.node.req.on('data', (chunks) => {
           console.log(chunks);
           requestBody.push(chunks);
         });
+
         event.node.req.on('end', () => {
           resolve(requestBody.join(''));
         });
@@ -47,7 +46,7 @@ export default eventHandler(async (event) => {
 
       console.log(text);
 
-      args = await decodeReply(text);
+      const args = await decodeReply(text);
 
       console.log(args, action);
 

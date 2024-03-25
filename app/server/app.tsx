@@ -1,5 +1,5 @@
 import { Counter } from '../client/Counter';
-import { getStore, sayHello } from './actions';
+import { getStore, resetCount, updateCount } from './actions';
 import './style.css';
 
 export default function App({ assets }) {
@@ -10,12 +10,15 @@ export default function App({ assets }) {
         {assets}
       </head>
       <body>
-        <section>
-          <h1>Hello AgentConf with ya asdo!!!</h1>
-          <div>Hello World</div>
+        <h1 className="m-auto text-center text-black">
+          React Server Components and Server Actions Demo
+        </h1>
 
-          {getStore()}
-          <Counter onChange={sayHello} />
+        <section className="p-8">
+          <div className="m-auto text-center mb-4">
+            Server Persisted Count: <strong>{getStore()}</strong>
+          </div>
+          <Counter onChange={updateCount} resetCount={resetCount} />
         </section>
       </body>
     </html>
