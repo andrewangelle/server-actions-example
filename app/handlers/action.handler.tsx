@@ -1,3 +1,4 @@
+/// <reference types="vinxi/types/server" />
 import {
   eventHandler,
   // sendStream
@@ -50,7 +51,6 @@ export default eventHandler(async (event) => {
 
       console.log(args, action);
 
-      // }
       const result = action.apply(null, args);
 
       try {
