@@ -24,6 +24,34 @@ export default eventHandler(async (event) => {
   const reactServerManifest = getManifest('rsc');
   const clientManifest = getManifest('client');
 
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from RSC handler - Node Req URL',
+    event.node.req.url,
+  );
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from RSC handler - Node Req METHOD',
+    event.node.req.method,
+  );
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from RSC handler - Event Auth Header',
+    event.headers.get('authorization'),
+  );
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from RSC handler - Node Req Auth Header',
+    event.node.req.headers.authorization,
+  );
+
+  console.log('\x1b[36m%s\x1b[0m', {
+    isSlash: event.node.req.url !== '/',
+    isRSC: event.node.req.url !== '/_rsc/',
+    doesNotHaveHeader: !event.headers.get('authorization'),
+    url: event.node.req.url,
+  });
+
   if (event.node.req.method === 'POST') {
     const {
       decodeReply,
@@ -104,6 +132,11 @@ export default eventHandler(async (event) => {
           {assets.map((m) => renderAsset(m))}
         </Suspense>
       }
+      isError={
+        (event.node.req.url === '/' || event.node.req.url.includes('_rsc/')) &&
+        event.node.req.method === 'GET' &&
+        !event.headers.get('authorization')
+      }
     />,
   );
 
@@ -118,6 +151,7 @@ export default eventHandler(async (event) => {
   // @ts-expect-error
   setHeaders(event, {
     'Content-Type': 'text/x-component',
+    'Access-Control-Allow-Origin': '*',
     Router: 'rsc',
   });
 

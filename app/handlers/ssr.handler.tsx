@@ -45,6 +45,33 @@ export default eventHandler(async (event) => {
 
   event.node.req.url = `/_rsc${event.node.req.url ?? ''}`;
 
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from ssr handler - Node Req URL',
+    event.node.req.url,
+  );
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from ssr handler - Event METHOD',
+    event.method,
+  );
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from ssr handler - Event Auth Header',
+    event.headers.get('authorization'),
+  );
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from ssr handler - Node Req METHOD',
+    event.node.req.method,
+  );
+  console.log(
+    '\x1b[36m%s\x1b[0m',
+    'from ssr handler - Node Req Auth Headers',
+    event.node.req.headers.authorization,
+  );
+  event.headers.set('authorization', event.headers.get('authorization'));
+
   // @ts-expect-error
   await handleHTTPEvent(new H3Event(event.node.req, responseStream.writable));
 
@@ -63,5 +90,7 @@ export default eventHandler(async (event) => {
   });
 
   setHeader(event, 'Content-Type', 'text/html');
+  setHeader(event, 'Access-Control-Allow-Origin', '*');
+
   return stream;
 });

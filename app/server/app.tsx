@@ -1,25 +1,29 @@
-import { Counter } from '../client/Counter';
+import { ClientContainer } from '../client/ClientContainer';
 import { getStore, resetCount, updateCount } from './actions';
 import './style.css';
 
-export default function App({ assets }) {
+type AppProps = {
+  assets: JSX.Element;
+  isError?: boolean;
+};
+
+export default async function App({ assets, isError = false }: AppProps) {
+  const count = await getStore();
+
   return (
     <html lang="en">
       <head>
+        <base href="http://localhost:5000" />
         <link rel="icon" href="/favicon.ico" />
         {assets}
       </head>
       <body>
-        <h1 className="m-auto text-center text-black">
-          React Server Components and Server Actions Demo
-        </h1>
-
-        <section className="p-8">
-          <div className="m-auto text-center mb-4">
-            Server Persisted Count: <strong>{getStore()}</strong>
-          </div>
-          <Counter onChange={updateCount} resetCount={resetCount} />
-        </section>
+        <ClientContainer
+          count={count}
+          isError={isError}
+          updateCount={updateCount}
+          resetCount={resetCount}
+        />
       </body>
     </html>
   );
