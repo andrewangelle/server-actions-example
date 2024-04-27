@@ -12,9 +12,15 @@ globalThis.__vite__ = createModuleLoader({
   },
 });
 
-// This should come from consumer
-const token = 'Bearer 12345';
-
 const [_origin, id] = window.location.pathname.split(window.location.origin);
 
-hydrateRoot(document, <ServerComponent url={id} token={token} />);
+window.top.postMessage({ message: 'EPS host ready' }, '*');
+
+window.addEventListener('message', (event) => {
+  if (event.data.token) {
+    hydrateRoot(
+      document,
+      <ServerComponent url={id} token={event.data.token} />,
+    );
+  }
+});

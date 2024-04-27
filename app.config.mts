@@ -54,7 +54,7 @@ const app = createApp({
 			base: "/_build",
 		},
 		{
-			name: "server",
+			name: "server-actions",
 			worker: true,
 			type: "http",
 			base: "/_server",
