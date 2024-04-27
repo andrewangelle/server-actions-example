@@ -1,11 +1,15 @@
 /// <reference types="vinxi/types/server" />
 import { renderAsset } from '@vinxi/react';
-import { renderToPipeableStream } from '@vinxi/react-server-dom/server';
+import {
+  decodeReply,
+  renderToPipeableStream,
+} from '@vinxi/react-server-dom/server';
 import { type ReactNode, Suspense } from 'react';
 import { eventHandler, setHeaders } from 'vinxi/http';
 import { getManifest } from 'vinxi/manifest';
 
 import App from '../server/app';
+import { logRSCEventsInfo } from './logging';
 
 type ManifestAsset = {
   tag: string;
@@ -13,8 +17,7 @@ type ManifestAsset = {
   children: ReactNode;
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <Can't figure out this type>
-function isLinkOrStyles(m: any) {
+function isLinkOrStyles(m: ManifestAsset) {
   return (
     (m.tag === 'link' && m.attrs.rel === 'stylesheet') || m.tag === 'style'
   );
@@ -24,42 +27,9 @@ export default eventHandler(async (event) => {
   const reactServerManifest = getManifest('rsc');
   const clientManifest = getManifest('client');
 
-  console.log(
-    '\x1b[36m%s\x1b[0m',
-    'from RSC handler - Node Req URL',
-    event.node.req.url,
-  );
-  console.log(
-    '\x1b[36m%s\x1b[0m',
-    'from RSC handler - Node Req METHOD',
-    event.node.req.method,
-  );
-  console.log(
-    '\x1b[36m%s\x1b[0m',
-    'from RSC handler - Event Auth Header',
-    event.headers.get('authorization'),
-  );
-  console.log(
-    '\x1b[36m%s\x1b[0m',
-    'from RSC handler - Node Req Auth Header',
-    event.node.req.headers.authorization,
-  );
-
-  console.log('\x1b[36m%s\x1b[0m', {
-    isSlash: event.node.req.url !== '/',
-    isRSC: event.node.req.url !== '/_rsc/',
-    doesNotHaveHeader: !event.headers.get('authorization'),
-    url: event.node.req.url,
-  });
+  logRSCEventsInfo(event);
 
   if (event.node.req.method === 'POST') {
-    const {
-      decodeReply,
-      // renderToPipeableStream,
-      // decodeReplyFromBusboy,
-      // decodeAction,
-    } = await import('@vinxi/react-server-dom/server');
-
     const serverReference = event.headers.get('server-action');
 
     if (serverReference) {
@@ -75,14 +45,6 @@ export default eventHandler(async (event) => {
       if (action.$$typeof !== Symbol.for('react.server.reference')) {
         throw new Error('Invalid action');
       }
-
-      // if (req.is('multipart/form-data')) {
-      //   // Use busboy to streamingly parse the reply from form-data.
-      //   const bb = busboy({headers: req.headers});
-      //   const reply = decodeReplyFromBusboy(bb, moduleBasePath);
-      //   req.pipe(bb);
-      //   args = await reply;
-      // } else {
 
       const text = await new Promise((resolve) => {
         const requestBody = [];
@@ -112,30 +74,24 @@ export default eventHandler(async (event) => {
     }
   }
 
-  const serverAssetsFromManifest =
-    await reactServerManifest.inputs[reactServerManifest.handler].assets();
+  const serverAssetsFromManifest = (await reactServerManifest.inputs[
+    reactServerManifest.handler
+  ].assets()) as unknown as ManifestAsset[];
 
-  const serverAssets = serverAssetsFromManifest.filter(
-    isLinkOrStyles,
-  ) as unknown as ManifestAsset[];
+  const serverAssets = serverAssetsFromManifest.filter(isLinkOrStyles);
 
-  const clientAssetsFromManifest =
-    await clientManifest.inputs[clientManifest.handler].assets();
-
-  const assets = clientAssetsFromManifest as unknown as ManifestAsset[];
+  const clientAssets = (await clientManifest.inputs[
+    clientManifest.handler
+  ].assets()) as unknown as ManifestAsset[];
 
   const stream = renderToPipeableStream(
     <App
+      isError={!event.context.token}
       assets={
         <Suspense>
           {serverAssets.map((m) => renderAsset(m))}
-          {assets.map((m) => renderAsset(m))}
+          {clientAssets.map((m) => renderAsset(m))}
         </Suspense>
-      }
-      isError={
-        (event.node.req.url === '/' || event.node.req.url.includes('_rsc/')) &&
-        event.node.req.method === 'GET' &&
-        !event.headers.get('authorization')
       }
     />,
   );

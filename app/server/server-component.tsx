@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-export function getServerElementStream(url: string) {
+export function getServerElementStream(url: string, token: string) {
   let stream: { body: ReadableStream<Uint8Array> } | Promise<Response>;
 
   // Ideally we should have a readable stream inlined in the HTML
@@ -25,6 +25,7 @@ export function getServerElementStream(url: string) {
       headers: {
         Accept: 'text/x-component',
         'x-navigate': url,
+        Authorization: token,
       },
     });
   }
@@ -32,8 +33,11 @@ export function getServerElementStream(url: string) {
   return stream;
 }
 
-export function ServerComponent({ url }: { url: string }) {
-  const [root, setRoot] = useState(use(useServerElement(url)));
+export function ServerComponent({
+  url,
+  token,
+}: { url: string; token: string }) {
+  const [root, setRoot] = useState(use(useServerElement(url, token)));
   updateRoot = setRoot;
   return root;
 }
@@ -43,9 +47,9 @@ export const serverElementCache = /*#__PURE__*/ new Map<
   React.Thenable<JSX.Element>
 >();
 
-export function createCallServer(base: string) {
+export function createCallServer(base: string, token: string) {
   return async function callServer(id: string, args: string[]) {
-    const root = await fetchServerAction(base, id, args, callServer);
+    const root = await fetchServerAction(base, id, args, token, callServer);
 
     // Refresh the tree with the new RSC payload.
     startTransition(() => {
@@ -56,14 +60,14 @@ export function createCallServer(base: string) {
   };
 }
 
-const callServer = createCallServer('/_rsc');
+const callServer = (token: string) => createCallServer('/_rsc', token);
 
-export function useServerElement(url: string) {
+export function useServerElement(url: string, token: string) {
   if (!serverElementCache.has(url)) {
     serverElementCache.set(
       url,
-      createFromFetch(getServerElementStream(url), {
-        callServer,
+      createFromFetch(getServerElementStream(url, token), {
+        callServer: callServer(token),
       }),
     );
   }

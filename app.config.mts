@@ -2,8 +2,14 @@ import { serverComponents } from "@vinxi/server-components/plugin";
 import { serverFunctions } from "@vinxi/server-functions/plugin";
 import reactRefresh from "@vitejs/plugin-react";
 import { createApp } from "vinxi";
+import middleware from "./app/server/middleware";
 
 const app = createApp({
+	server: {
+		experimental: {
+			asyncContext: true
+		},
+	},
 	routers: [
 		{
 			name: "public",
@@ -17,7 +23,12 @@ const app = createApp({
 			base: "/_rsc",
 			handler: "./app/handlers/rsc.handler.tsx",
 			target: "server",
-			plugins: () => [serverComponents.server(), reactRefresh()],
+			plugins: () => [
+				serverComponents.server(), 
+				reactRefresh()
+			],
+			middleware: './app/server/middleware.ts'
+
 		},
 		{
 			name: "ssr",
@@ -26,6 +37,7 @@ const app = createApp({
 			target: "server",
 			plugins: () => [],
 			base: "/",
+			middleware: './app/server/middleware.ts'
 		},
 		{
 			name: "client",
