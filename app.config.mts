@@ -2,7 +2,7 @@ import { serverComponents } from "@vinxi/server-components/plugin";
 import { serverFunctions } from "@vinxi/server-functions/plugin";
 import reactRefresh from "@vitejs/plugin-react";
 import { createApp } from "vinxi";
-import middleware from "./app/server/middleware";
+import middleware from "./app/handlers/middleware";
 
 const app = createApp({
 	server: {
@@ -27,7 +27,7 @@ const app = createApp({
 				serverComponents.server(), 
 				reactRefresh()
 			],
-			middleware: './app/server/middleware.ts'
+			middleware: './app/handlers/middleware.ts'
 
 		},
 		{
@@ -37,7 +37,7 @@ const app = createApp({
 			target: "server",
 			plugins: () => [],
 			base: "/",
-			middleware: './app/server/middleware.ts'
+			middleware: './app/handlers/middleware.ts'
 		},
 		{
 			name: "client",

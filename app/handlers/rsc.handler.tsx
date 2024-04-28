@@ -107,7 +107,6 @@ export default eventHandler(async (event) => {
   // @ts-expect-error
   setHeaders(event, {
     'Content-Type': 'text/x-component',
-    'Access-Control-Allow-Origin': '*',
     Router: 'rsc',
   });
 

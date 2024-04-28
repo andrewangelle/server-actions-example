@@ -58,10 +58,6 @@ export default eventHandler(async (event) => {
 
   logSSREventsInfo(event);
 
-  if (!event.context.token) {
-    throw new Error('Unauthorized');
-  }
-
   const responseStream = createStream();
 
   event.node.req.url = `/_rsc${event.node.req.url ?? ''}`;
@@ -84,7 +80,6 @@ export default eventHandler(async (event) => {
   });
 
   setHeader(event, 'Content-Type', 'text/html');
-  setHeader(event, 'Access-Control-Allow-Origin', '*');
 
   return stream;
 });
