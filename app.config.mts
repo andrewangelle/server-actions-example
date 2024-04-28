@@ -1,8 +1,7 @@
+import { createApp } from "vinxi";
 import { serverComponents } from "@vinxi/server-components/plugin";
 import { serverFunctions } from "@vinxi/server-functions/plugin";
 import reactRefresh from "@vitejs/plugin-react";
-import { createApp } from "vinxi";
-import middleware from "./app/handlers/middleware";
 
 const app = createApp({
 	server: {

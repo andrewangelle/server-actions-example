@@ -12,11 +12,13 @@ globalThis.__vite__ = createModuleLoader({
   },
 });
 
-const [_origin, id] = window.location.pathname.split(window.location.origin);
+const [_origin, id] = globalThis.location.pathname.split(
+  window.location.origin,
+);
 
-window.top.postMessage({ message: 'EPS host ready' }, '*');
+globalThis.top.postMessage({ message: 'EPS host ready' }, '*');
 
-window.addEventListener('message', (event) => {
+globalThis.addEventListener('message', (event) => {
   if (event.data.token) {
     hydrateRoot(
       document,
