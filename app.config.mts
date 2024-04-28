@@ -53,23 +53,6 @@ const app = createApp({
 			],
 			base: "/_build",
 		},
-		{
-			name: "server-actions",
-			worker: true,
-			type: "http",
-			base: "/_server",
-			handler: "./app/handlers/action.handler.tsx",
-			target: "server",
-			plugins: () => [
-				serverFunctions.server({
-					resolve: {
-						conditions: ["react-server"],
-					},
-					runtime: '@vinxi/react-server-dom/runtime',
-				}),
-				serverComponents.serverActions(),
-			],
-		},
 	],
 });
 
