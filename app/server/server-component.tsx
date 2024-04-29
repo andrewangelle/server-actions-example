@@ -1,10 +1,16 @@
 import { createFromFetch } from '@vinxi/react-server-dom/client';
-import type * as React from 'react';
-import { startTransition, use, useState } from 'react';
+import {
+  type Dispatch,
+  type SetStateAction,
+  type Thenable,
+  startTransition,
+  use,
+  useState,
+} from 'react';
 
 import { fetchServerAction } from '../client/fetchServerAction';
 
-let updateRoot: React.Dispatch<React.SetStateAction<JSX.Element>>;
+let updateRoot: Dispatch<SetStateAction<JSX.Element>>;
 
 declare global {
   interface Window {
@@ -44,7 +50,7 @@ export function ServerComponent({
 
 export const serverElementCache = /*#__PURE__*/ new Map<
   string,
-  React.Thenable<JSX.Element>
+  Thenable<JSX.Element>
 >();
 
 export function createCallServer(base: string, token: string) {
