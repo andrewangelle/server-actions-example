@@ -1,17 +1,26 @@
-import { defineMiddleware, setContext, setHeader } from 'vinxi/http';
+import {
+  type EventHandlerRequest,
+  type H3Event,
+  defineMiddleware,
+  setContext,
+  setHeader,
+} from 'vinxi/http';
+
+function onRequest(event: H3Event<EventHandlerRequest>) {
+  const token = event.headers.get('authorization');
+
+  if (!token) {
+    throw new Error('Unauthorized');
+  }
+
+  setContext(event, 'token', token);
+}
+
+function onBeforeResponse(event: H3Event<EventHandlerRequest>) {
+  setHeader(event, 'Access-Control-Allow-Origin', '*');
+}
 
 export default defineMiddleware({
-  onRequest: (event) => {
-    const token = event.headers.get('authorization');
-
-    if (!token) {
-      throw new Error('Unauthorized');
-    }
-
-    setContext(event, 'token', token);
-  },
-  onBeforeResponse: (event) => {
-    setHeader(event, 'Access-Control-Allow-Origin', '*');
-    setHeader(event, 'Mid-Check', 'Test');
-  },
+  onRequest,
+  onBeforeResponse,
 });
